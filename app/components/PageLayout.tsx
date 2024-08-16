@@ -1,14 +1,12 @@
-import {Await, Link} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Link} from '@remix-run/react';
 import type {
   CartApiQueryFragment,
   FooterQuery,
   HeaderQuery,
 } from 'storefrontapi.generated';
 
-import {CartMain} from '@/components/CartMain';
 import {Footer} from '@/components/Footer';
-import {Header, HeaderMenu} from '@/components/Header';
+import {Header} from '@/components/Header';
 import {
   SEARCH_ENDPOINT,
   SearchFormPredictive,
@@ -34,9 +32,6 @@ export function PageLayout({
 }: PageLayoutProps) {
   return (
     <>
-      <CartAside cart={cart} />
-
-      <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
       {header && (
         <Header
           header={header}
@@ -52,18 +47,6 @@ export function PageLayout({
         publicStoreDomain={publicStoreDomain}
       />
     </>
-  );
-}
-
-function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
-  return (
-    <Suspense fallback={<p>Loading cart ...</p>}>
-      <Await resolve={cart}>
-        {(cart) => {
-          return <CartMain cart={cart} layout="aside" />;
-        }}
-      </Await>
-    </Suspense>
   );
 }
 
@@ -142,24 +125,5 @@ function SearchAside() {
         }}
       </SearchResultsPredictive>
     </div>
-  );
-}
-
-function MobileMenuAside({
-  header,
-  publicStoreDomain,
-}: {
-  header: PageLayoutProps['header'];
-  publicStoreDomain: PageLayoutProps['publicStoreDomain'];
-}) {
-  return (
-    header.menu &&
-    header.shop.primaryDomain?.url && (
-      <HeaderMenu
-        menu={header.menu}
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-    )
   );
 }

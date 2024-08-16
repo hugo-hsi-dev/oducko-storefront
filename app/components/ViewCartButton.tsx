@@ -40,7 +40,7 @@ function CartHoverCard({count}: {count: number | null}) {
   }
 
   return (
-    <HoverCard>
+    <HoverCard open={true}>
       <HoverCardTrigger asChild>
         <Button variant="ghost" size="icon" asChild>
           <NavLink to="/cart" onClick={handleClick} className="relative">
@@ -55,8 +55,15 @@ function CartHoverCard({count}: {count: number | null}) {
           </NavLink>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent align="end">
-        <CartMain layout="aside" cart={cart} />
+      <HoverCardContent align="end" className="flex flex-col gap-2 w-fit">
+        <div className="text-3xl font-bold">Cart</div>
+        <Suspense fallback={<p>Loading cart ...</p>}>
+          <Await resolve={cart}>
+            {(cart) => {
+              return <CartMain cart={cart} />;
+            }}
+          </Await>
+        </Suspense>
       </HoverCardContent>
     </HoverCard>
   );

@@ -1,20 +1,19 @@
-import type {CartApiQueryFragment} from 'storefrontapi.generated';
-import type {CartLayout} from '@/components/CartMain';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Link} from '@remix-run/react';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
+import {ArrowRight} from 'lucide-react';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
-  layout: CartLayout;
 };
 
-export function CartSummary({cart, layout}: CartSummaryProps) {
-  const className =
-    layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
-
+export function CartSummary({cart}: CartSummaryProps) {
   return (
-    <div aria-labelledby="cart-summary" className={className}>
+    <div className="flex flex-col gap-2" aria-labelledby="cart-summary">
       <h4>Totals</h4>
-      <dl className="cart-subtotal">
+      <dl>
         <dt>Subtotal</dt>
         <dd>
           {cart.cost?.subtotalAmount?.amount ? (
@@ -33,12 +32,12 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div>
-      <a href={checkoutUrl} target="_self">
-        <p>Continue to Checkout &rarr;</p>
-      </a>
-      <br />
-    </div>
+    <Button asChild>
+      <Link to={checkoutUrl} target="_self" className="flex gap-2">
+        Continue to Checkout
+        <ArrowRight size={16} />
+      </Link>
+    </Button>
   );
 }
 
@@ -59,9 +58,8 @@ function CartDiscounts({
         <div>
           <dt>Discount(s)</dt>
           <UpdateDiscountForm>
-            <div className="cart-discount">
+            <div>
               <code>{codes?.join(', ')}</code>
-              &nbsp;
               <button>Remove</button>
             </div>
           </UpdateDiscountForm>
@@ -70,10 +68,9 @@ function CartDiscounts({
 
       {/* Show an input to apply a discount */}
       <UpdateDiscountForm discountCodes={codes}>
-        <div>
-          <input type="text" name="discountCode" placeholder="Discount code" />
-          &nbsp;
-          <button type="submit">Apply</button>
+        <div className="flex gap-2">
+          <Input type="text" name="discountCode" placeholder="Discount code" />
+          <Button type="submit">Apply</Button>
         </div>
       </UpdateDiscountForm>
     </div>
