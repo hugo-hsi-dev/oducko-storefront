@@ -40,7 +40,7 @@ function CartHoverCard({count}: {count: number | null}) {
   }
 
   return (
-    <HoverCard open={true}>
+    <HoverCard>
       <HoverCardTrigger asChild>
         <Button variant="ghost" size="icon" asChild>
           <NavLink to="/cart" onClick={handleClick} className="relative">
