@@ -5,7 +5,7 @@ import {
   type Fetcher,
 } from '@remix-run/react';
 import React, {useRef, useEffect} from 'react';
-import type {PredictiveSearchReturn} from '~/lib/search';
+import type {PredictiveSearchReturn} from '@/lib/search';
 import {useAside} from './Aside';
 
 type SearchFormPredictiveChildren = (args: {
