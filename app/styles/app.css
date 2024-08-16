@@ -8,10 +8,6 @@
   --color-light: #fff;
 }
 
-img {
-  border-radius: 4px;
-}
-
 /*
 * --------------------------------------------------
 * components/Aside
@@ -122,26 +118,6 @@ aside li {
   transform: translateX(calc(var(--aside-width) * -1));
 }
 
-button.reset {
-  border: 0;
-  background: inherit;
-  font-size: inherit;
-}
-
-button.reset > * {
-  margin: 0;
-}
-
-button.reset:not(:has(> *)) {
-  height: 1.5rem;
-  line-height: 1.5rem;
-}
-
-button.reset:hover:not(:has(> *)) {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 /*
 * --------------------------------------------------
 * components/Header
@@ -178,17 +154,6 @@ button.reset:hover:not(:has(> *)) {
     grid-gap: 1rem;
     margin-left: 3rem;
   }
-}
-
-.header-menu-item {
-  cursor: pointer;
-}
-
-.header-ctas {
-  align-items: center;
-  display: flex;
-  grid-gap: 1rem;
-  margin-left: auto;
 }
 
 /*

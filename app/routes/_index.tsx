@@ -79,7 +79,7 @@ function FeaturedCollection({
     >
       {image && (
         <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
+          <Image data={image} sizes="100vw"/>
         </div>
       )}
       <h1>{collection.title}</h1>
