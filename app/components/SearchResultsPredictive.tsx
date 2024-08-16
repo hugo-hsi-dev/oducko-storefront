@@ -1,12 +1,11 @@
-import {Link, useFetcher, type Fetcher} from '@remix-run/react';
-import {Image, Money} from '@shopify/hydrogen';
-import React, {useRef, useEffect} from 'react';
 import {
   getEmptyPredictiveSearchResult,
   urlWithTrackingParams,
   type PredictiveSearchReturn,
 } from '@/lib/search';
-import {useAside} from './Aside';
+import {Link, useFetcher, type Fetcher} from '@remix-run/react';
+import {Image, Money} from '@shopify/hydrogen';
+import React, {useEffect, useRef} from 'react';
 
 type PredictiveSearchItems = PredictiveSearchReturn['result']['items'];
 
@@ -42,7 +41,7 @@ type SearchResultsPredictiveProps = {
 export function SearchResultsPredictive({
   children,
 }: SearchResultsPredictiveProps) {
-  const aside = useAside();
+  // const aside = useAside();
   const {term, inputRef, fetcher, total, items} = usePredictiveSearch();
 
   /*
@@ -60,7 +59,7 @@ export function SearchResultsPredictive({
    */
   function closeSearch() {
     resetInput();
-    aside.close();
+    // aside.close();
   }
 
   return children({

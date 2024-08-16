@@ -1,7 +1,7 @@
-import {useOptimisticCart} from '@shopify/hydrogen';
 import {Link} from '@remix-run/react';
+import {useOptimisticCart} from '@shopify/hydrogen';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
-import {useAside} from '@/components/Aside';
+
 import {CartLineItem} from '@/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 
@@ -51,7 +51,7 @@ function CartEmpty({
   hidden: boolean;
   layout?: CartMainProps['layout'];
 }) {
-  const {close} = useAside();
+  // const {close} = useAside();
   return (
     <div hidden={hidden}>
       <br />

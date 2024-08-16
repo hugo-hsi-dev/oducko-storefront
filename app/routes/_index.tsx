@@ -1,7 +1,7 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import {Suspense} from 'react';
-import {Image, Money} from '@shopify/hydrogen';
+import { Await, Link, useLoaderData, type MetaFunction } from '@remix-run/react';
+import { Image, Money } from '@shopify/hydrogen';
+import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { Suspense } from 'react';
 import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
@@ -98,7 +98,7 @@ function RecommendedProducts({
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
           {(response) => (
-            <div className="recommended-products-grid">
+            <div className="grid grid-cols-1">
               {response
                 ? response.products.nodes.map((product) => (
                     <Link
