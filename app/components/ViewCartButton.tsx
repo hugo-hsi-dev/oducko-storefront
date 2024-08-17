@@ -3,7 +3,13 @@ import {Button} from '@/components/ui/button';
 import {Await, NavLink} from '@remix-run/react';
 import {CartViewPayload, useAnalytics} from '@shopify/hydrogen';
 import {ShoppingBag} from 'lucide-react';
-import {Suspense} from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  Suspense,
+  useContext,
+  useState,
+} from 'react';
 
 import {CartMain} from '@/components/CartMain';
 import {
@@ -27,10 +33,9 @@ export function ViewCartButton({cart}: Pick<HeaderProps, 'cart'>) {
 
 function CartHoverCard({count}: {count: number | null}) {
   const {publish, shop, cart, prevCart} = useAnalytics();
-
+  const {open, setOpen} = useCartHoverCardContext();
   function handleClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
     e.preventDefault();
-    open('cart');
     publish('cart_viewed', {
       cart,
       prevCart,
@@ -40,7 +45,7 @@ function CartHoverCard({count}: {count: number | null}) {
   }
 
   return (
-    <HoverCard>
+    <HoverCard open={open} onOpenChange={setOpen}>
       <HoverCardTrigger asChild>
         <Button variant="ghost" size="icon" asChild>
           <NavLink to="/cart" onClick={handleClick} className="relative">
@@ -70,5 +75,28 @@ function CartHoverCard({count}: {count: number | null}) {
         </Suspense>
       </HoverCardContent>
     </HoverCard>
+  );
+}
+
+const CartHoverCardContext = createContext<{
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+} | null>(null);
+
+export function useCartHoverCardContext() {
+  const context = useContext(CartHoverCardContext);
+  if (!context) {
+    throw new Error('Must be used inside of CartHoverCardProvider');
+  }
+  return context;
+}
+
+export function CartHoverCardProvider({children}: PropsWithChildren) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <CartHoverCardContext.Provider value={{open, setOpen}}>
+      {children}
+    </CartHoverCardContext.Provider>
   );
 }

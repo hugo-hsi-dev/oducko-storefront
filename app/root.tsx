@@ -16,6 +16,7 @@ import appStyles from '@/styles/app.css?url';
 import styles from './styles/globals.css?url';
 import {PageLayout} from '@/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '@/lib/fragments';
+import {CartHoverCardProvider} from './components/ViewCartButton';
 
 export type RootLoader = typeof loader;
 
@@ -146,7 +147,9 @@ export function Layout({children}: {children?: React.ReactNode}) {
             shop={data.shop}
             consent={data.consent}
           >
-            <PageLayout {...data}>{children}</PageLayout>
+            <CartHoverCardProvider>
+              <PageLayout {...data}>{children}</PageLayout>
+            </CartHoverCardProvider>
           </Analytics.Provider>
         ) : (
           children
