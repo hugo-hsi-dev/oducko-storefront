@@ -1,12 +1,12 @@
 import {type FetcherWithComponents} from '@remix-run/react';
 import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
+import {Button} from './ui/button';
 
 export function AddToCartButton({
   analytics,
   children,
   disabled,
   lines,
-  onClick,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
@@ -23,13 +23,9 @@ export function AddToCartButton({
             type="hidden"
             value={JSON.stringify(analytics)}
           />
-          <button
-            type="submit"
-            onClick={onClick}
-            disabled={disabled ?? fetcher.state !== 'idle'}
-          >
+          <Button type="submit" disabled={disabled ?? fetcher.state !== 'idle'}>
             {children}
-          </button>
+          </Button>
         </>
       )}
     </CartForm>

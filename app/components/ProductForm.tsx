@@ -1,4 +1,5 @@
 import {AddToCartButton} from '@/components/AddToCartButton';
+import {cn} from '@/lib/utils';
 import {Link} from '@remix-run/react';
 import {type VariantOption, VariantSelector} from '@shopify/hydrogen';
 import type {
@@ -15,7 +16,6 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedVariant'];
   variants: Array<ProductVariantFragment>;
 }) {
-  // const {open} = useAside();
   return (
     <div className="product-form">
       <VariantSelector
@@ -28,9 +28,6 @@ export function ProductForm({
       <br />
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          open('cart');
-        }}
         lines={
           selectedVariant
             ? [
@@ -57,16 +54,23 @@ function ProductOptions({option}: {option: VariantOption}) {
         {option.values.map(({value, isAvailable, isActive, to}) => {
           return (
             <Link
-              className="product-options-item"
+              className={cn(
+                'rounded p-2',
+                isActive
+                  ? 'border'
+                  : '' + isAvailable
+                    ? 'opacity-100'
+                    : 'opacity-30',
+              )}
               key={option.name + value}
               prefetch="intent"
               preventScrollReset
               replace
               to={to}
-              style={{
-                border: isActive ? '1px solid black' : '1px solid transparent',
-                opacity: isAvailable ? 1 : 0.3,
-              }}
+              // style={{
+              //   border: isActive ? '1px solid black' : '1px solid transparent',
+              //   opacity: isAvailable ? 1 : 0.3,
+              // }}
             >
               {value}
             </Link>
