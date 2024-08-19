@@ -22,7 +22,7 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="sticky top-0 container p-3 flex justify-between">
+    <header className="fixed top-0 container p-3 flex justify-between z-10">
       <div className="flex items-center">
         <MobileSheet
           isLoggedIn={isLoggedIn}
