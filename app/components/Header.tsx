@@ -1,9 +1,10 @@
 import MobileSheet from '@/components/MobileSheet';
+import SearchDialog from '@/components/SearchDialog';
 import {Button} from '@/components/ui/button';
 import {ViewCartButton} from '@/components/ViewCartButton';
 
 import {Await, NavLink} from '@remix-run/react';
-import {Search, User} from 'lucide-react';
+import {User} from 'lucide-react';
 import {Suspense} from 'react';
 import type {CartApiQueryFragment, HeaderQuery} from 'storefrontapi.generated';
 
@@ -84,7 +85,7 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <nav className="flex" role="navigation">
-      <SearchToggle />
+      <SearchDialog />
       <NavLink prefetch="intent" to="/account" className="hidden sm:block">
         <Suspense
           fallback={
@@ -116,19 +117,6 @@ function HeaderCtas({
 
       <ViewCartButton cart={cart} />
     </nav>
-  );
-}
-
-function SearchToggle() {
-  return (
-    <Button
-      className="reset"
-      size="icon"
-      variant="ghost"
-      onClick={() => open('search')}
-    >
-      <Search size="16" />
-    </Button>
   );
 }
 

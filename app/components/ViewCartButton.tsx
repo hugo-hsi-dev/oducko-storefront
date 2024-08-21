@@ -60,11 +60,7 @@ function CartHoverCard({count}: {count: number | null}) {
           </NavLink>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent
-        align="end"
-        className="flex flex-col gap-2 w-fit"
-        sideOffset={25}
-      >
+      <HoverCardContent align="end" className="flex flex-col gap-2 w-fit">
         <div className="text-3xl font-bold">Cart</div>
         <Suspense fallback={<p>Loading cart ...</p>}>
           <Await resolve={cart}>
