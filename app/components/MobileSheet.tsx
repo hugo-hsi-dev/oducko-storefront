@@ -25,10 +25,8 @@ export default function MobileSheet({
   const {shop, menu} = header;
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button size="icon" variant="ghost" className="flex sm:hidden">
-          <Menu />
-        </Button>
+      <SheetTrigger className="block sm:hidden">
+        <Menu />
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col justify-between">
         <SheetHeader>

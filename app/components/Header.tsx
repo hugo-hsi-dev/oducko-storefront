@@ -23,23 +23,25 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="fixed top-0 left-0 right-0 flex p-3 justify-between z-10">
-      <div className="flex items-center">
-        <MobileSheet
-          isLoggedIn={isLoggedIn}
-          header={header}
-          publicStoreDomain={publicStoreDomain}
-        />
-        <NavLink prefetch="intent" to="/" end>
-          <strong className="text-xl">{shop.name}</strong>
-        </NavLink>
-        <HeaderMenu
-          menu={menu}
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          publicStoreDomain={publicStoreDomain}
-        />
+    <header className="fixed top-0 left-0 right-0 py-3 z-10 bg-background">
+      <div className="container flex justify-between">
+        <div className="flex items-center gap-2">
+          <MobileSheet
+            isLoggedIn={isLoggedIn}
+            header={header}
+            publicStoreDomain={publicStoreDomain}
+          />
+          <NavLink prefetch="intent" to="/" end>
+            <strong className="text-xl">{shop.name}</strong>
+          </NavLink>
+          <HeaderMenu
+            menu={menu}
+            primaryDomainUrl={header.shop.primaryDomain.url}
+            publicStoreDomain={publicStoreDomain}
+          />
+        </div>
+        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
       </div>
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
     </header>
   );
 }

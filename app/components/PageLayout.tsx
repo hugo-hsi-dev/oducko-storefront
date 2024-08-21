@@ -40,7 +40,7 @@ export function PageLayout({
           publicStoreDomain={publicStoreDomain}
         />
       )}
-      <main>{children}</main>
+      <main className="container mt-16">{children}</main>
       <Footer
         footer={footer}
         header={header}
@@ -72,7 +72,7 @@ function SearchAside() {
       </SearchFormPredictive>
 
       <SearchResultsPredictive>
-        {({items, total, term, state, inputRef, closeSearch}) => {
+        {({items, total, term, state, inputRef}) => {
           const {articles, collections, pages, products, queries} = items;
 
           if (state === 'loading' && term.current) {
@@ -91,29 +91,19 @@ function SearchAside() {
               />
               <SearchResultsPredictive.Products
                 products={products}
-                closeSearch={closeSearch}
                 term={term}
               />
               <SearchResultsPredictive.Collections
                 collections={collections}
-                closeSearch={closeSearch}
                 term={term}
               />
-              <SearchResultsPredictive.Pages
-                pages={pages}
-                closeSearch={closeSearch}
-                term={term}
-              />
+              <SearchResultsPredictive.Pages pages={pages} term={term} />
               <SearchResultsPredictive.Articles
                 articles={articles}
-                closeSearch={closeSearch}
                 term={term}
               />
               {term.current && total ? (
-                <Link
-                  onClick={closeSearch}
-                  to={`${SEARCH_ENDPOINT}?q=${term.current}`}
-                >
+                <Link to={`${SEARCH_ENDPOINT}?q=${term.current}`}>
                   <p>
                     View all results for <q>{term.current}</q>
                     &nbsp; →

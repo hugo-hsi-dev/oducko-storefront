@@ -1,3 +1,4 @@
+import {DialogClose} from '@/components/ui/dialog';
 import {
   getEmptyPredictiveSearchResult,
   urlWithTrackingParams,
@@ -22,12 +23,11 @@ type SearchResultsPredictiveArgs = Pick<
   'term' | 'total' | 'inputRef' | 'items'
 > & {
   state: Fetcher['state'];
-  closeSearch: () => void;
 };
 
 type PartialPredictiveSearchResult<
   ItemType extends keyof PredictiveSearchItems,
-  ExtraProps extends keyof SearchResultsPredictiveArgs = 'term' | 'closeSearch',
+  ExtraProps extends keyof SearchResultsPredictiveArgs = 'term',
 > = Pick<PredictiveSearchItems, ItemType> &
   Pick<SearchResultsPredictiveArgs, ExtraProps>;
 
@@ -54,17 +54,8 @@ export function SearchResultsPredictive({
     }
   }
 
-  /**
-   * Utility that resets the search input and closes the search aside
-   */
-  function closeSearch() {
-    resetInput();
-    // aside.close();
-  }
-
   return children({
     items,
-    closeSearch,
     inputRef,
     state: fetcher.state,
     term,
@@ -82,7 +73,6 @@ SearchResultsPredictive.Empty = SearchResultsPredictiveEmpty;
 function SearchResultsPredictiveArticles({
   term,
   articles,
-  closeSearch,
 }: PartialPredictiveSearchResult<'articles'>) {
   if (!articles.length) return null;
 
@@ -99,15 +89,7 @@ function SearchResultsPredictiveArticles({
 
           return (
             <li className="predictive-search-result-item" key={article.id}>
-              <Link onClick={closeSearch} to={articleUrl}>
-                {article.image?.url && (
-                  <Image
-                    alt={article.image.altText ?? ''}
-                    src={article.image.url}
-                    width={50}
-                    height={50}
-                  />
-                )}
+              <Link to={articleUrl}>
                 <div>
                   <span>{article.title}</span>
                 </div>
@@ -123,7 +105,6 @@ function SearchResultsPredictiveArticles({
 function SearchResultsPredictiveCollections({
   term,
   collections,
-  closeSearch,
 }: PartialPredictiveSearchResult<'collections'>) {
   if (!collections.length) return null;
 
@@ -140,7 +121,7 @@ function SearchResultsPredictiveCollections({
 
           return (
             <li className="predictive-search-result-item" key={collection.id}>
-              <Link onClick={closeSearch} to={colllectionUrl}>
+              <Link to={colllectionUrl}>
                 {collection.image?.url && (
                   <Image
                     alt={collection.image.altText ?? ''}
@@ -164,7 +145,6 @@ function SearchResultsPredictiveCollections({
 function SearchResultsPredictivePages({
   term,
   pages,
-  closeSearch,
 }: PartialPredictiveSearchResult<'pages'>) {
   if (!pages.length) return null;
 
@@ -181,7 +161,7 @@ function SearchResultsPredictivePages({
 
           return (
             <li className="predictive-search-result-item" key={page.id}>
-              <Link onClick={closeSearch} to={pageUrl}>
+              <Link to={pageUrl}>
                 <div>
                   <span>{page.title}</span>
                 </div>
@@ -197,7 +177,6 @@ function SearchResultsPredictivePages({
 function SearchResultsPredictiveProducts({
   term,
   products,
-  closeSearch,
 }: PartialPredictiveSearchResult<'products'>) {
   if (!products.length) return null;
 
@@ -215,24 +194,26 @@ function SearchResultsPredictiveProducts({
           const image = product?.variants?.nodes?.[0].image;
           return (
             <li className="predictive-search-result-item" key={product.id}>
-              <Link to={productUrl} onClick={closeSearch}>
-                {image && (
-                  <Image
-                    alt={image.altText ?? ''}
-                    src={image.url}
-                    width={50}
-                    height={50}
-                  />
-                )}
-                <div>
-                  <p>{product.title}</p>
-                  <small>
-                    {product?.variants?.nodes?.[0].price && (
-                      <Money data={product.variants.nodes[0].price} />
-                    )}
-                  </small>
-                </div>
-              </Link>
+              <DialogClose asChild>
+                <Link to={productUrl}>
+                  {image && (
+                    <Image
+                      alt={image.altText ?? ''}
+                      src={image.url}
+                      width={50}
+                      height={50}
+                    />
+                  )}
+                  <div>
+                    <p>{product.title}</p>
+                    <small>
+                      {product?.variants?.nodes?.[0].price && (
+                        <Money data={product.variants.nodes[0].price} />
+                      )}
+                    </small>
+                  </div>
+                </Link>
+              </DialogClose>
             </li>
           );
         })}

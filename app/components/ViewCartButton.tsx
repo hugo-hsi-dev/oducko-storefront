@@ -1,6 +1,6 @@
 import {HeaderProps} from '@/components/Header';
 import {Button} from '@/components/ui/button';
-import {Await, NavLink} from '@remix-run/react';
+import {Await, Link} from '@remix-run/react';
 import {CartViewPayload, useAnalytics} from '@shopify/hydrogen';
 import {ShoppingBag} from 'lucide-react';
 import {
@@ -35,7 +35,7 @@ function CartHoverCard({count}: {count: number | null}) {
   const {publish, shop, cart, prevCart} = useAnalytics();
   const {open, setOpen} = useCartHoverCardContext();
   function handleClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-    e.preventDefault();
+    // e.preventDefault();
     publish('cart_viewed', {
       cart,
       prevCart,
@@ -48,7 +48,7 @@ function CartHoverCard({count}: {count: number | null}) {
     <HoverCard open={open} onOpenChange={setOpen}>
       <HoverCardTrigger asChild>
         <Button variant="ghost" size="icon" asChild>
-          <NavLink to="/cart" onClick={handleClick} className="relative">
+          <Link to="/cart" onClick={handleClick} className="relative">
             <ShoppingBag size={16} />
             {count === null ? (
               ''
@@ -57,10 +57,14 @@ function CartHoverCard({count}: {count: number | null}) {
                 {count}
               </div>
             )}
-          </NavLink>
+          </Link>
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent align="end" className="flex flex-col gap-2 w-fit">
+
+      <HoverCardContent
+        align="end"
+        className="hidden sm:flex sm:flex-col gap-2 w-fit"
+      >
         <div className="text-3xl font-bold">Cart</div>
         <Suspense fallback={<p>Loading cart ...</p>}>
           <Await resolve={cart}>

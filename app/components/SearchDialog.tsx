@@ -36,7 +36,6 @@ export default function SearchDialog() {
                   onFocus={fetchResults}
                   placeholder="Search"
                   ref={inputRef}
-                  type="text"
                 />
 
                 <DialogClose className="bg-primary text-primary-foreground text-xs p-1 px-2 rounded">
@@ -49,11 +48,11 @@ export default function SearchDialog() {
         </SearchFormPredictive>
 
         <SearchResultsPredictive>
-          {({items, total, term, state, inputRef, closeSearch}) => {
+          {({items, total, term, state, inputRef}) => {
             const {articles, collections, pages, products, queries} = items;
 
             if (state === 'loading' && term.current) {
-              return <div>Loading...</div>;
+              return <div className="p-6">Loading...</div>;
             }
 
             if (!total) {
@@ -63,38 +62,29 @@ export default function SearchDialog() {
             return (
               <>
                 <ScrollArea className="p-6 max-h-[300px]">
-                  <SearchResultsPredictive.Queries
+                  {/* TODO: adds possible search terms to the dialog */}
+                  {/* <SearchResultsPredictive.Queries
                     queries={queries}
                     inputRef={inputRef}
-                  />
+                  /> */}
                   <SearchResultsPredictive.Products
                     products={products}
-                    closeSearch={closeSearch}
                     term={term}
                   />
                   <SearchResultsPredictive.Collections
                     collections={collections}
-                    closeSearch={closeSearch}
                     term={term}
                   />
-                  <SearchResultsPredictive.Pages
-                    pages={pages}
-                    closeSearch={closeSearch}
-                    term={term}
-                  />
+                  <SearchResultsPredictive.Pages pages={pages} term={term} />
                   <SearchResultsPredictive.Articles
                     articles={articles}
-                    closeSearch={closeSearch}
                     term={term}
                   />
                 </ScrollArea>
                 <Separator />
                 <div className="px-6 py-2">
                   {term.current && total ? (
-                    <Link
-                      onClick={closeSearch}
-                      to={`${SEARCH_ENDPOINT}?q=${term.current}`}
-                    >
+                    <Link to={`${SEARCH_ENDPOINT}?q=${term.current}`}>
                       <p>
                         View all results for <q>{term.current}</q>
                         &nbsp; →
