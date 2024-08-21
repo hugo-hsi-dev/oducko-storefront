@@ -66,7 +66,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <Button
           aria-label="Decrease quantity"
