@@ -13,7 +13,6 @@ export function AddToCartButton({
   children: React.ReactNode;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
-  onClick?: () => void;
 }) {
   const {open, setOpen} = useCartHoverCardContext();
   return (

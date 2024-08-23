@@ -23,7 +23,7 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="fixed top-0 left-0 right-0 py-3 z-10 bg-background">
+    <header className="fixed top-0 left-0 right-0 py-3 z-50 bg-background">
       <div className="container flex justify-between">
         <div className="flex items-center gap-2">
           <MobileSheet

@@ -1,8 +1,23 @@
-import { Await, Link, useLoaderData, type MetaFunction } from '@remix-run/react';
-import { Image, Money } from '@shopify/hydrogen';
-import { defer, type LoaderFunctionArgs } from '@shopify/remix-oxygen';
-import { Suspense } from 'react';
+import CollectionGrid from '@/components/collections/CollectionGrid';
+import ProductCard from '@/components/product-card/ProductCard';
+import ProductCardImage from '@/components/product-card/ProductCardImage';
+import ProductCardLink from '@/components/product-card/ProductCardLink';
+import ProductCardPrice from '@/components/product-card/ProductCardPrice';
+import ProductCardTitle from '@/components/product-card/ProductCardTitle';
+import {Button} from '@/components/ui/button';
+import {ALL_COLLECTIONS_QUERY} from '@/graphql/store/CollectionsQuery';
+import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Image} from '@shopify/hydrogen';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
+import {Suspense} from 'react';
 import type {
+  AllCollectionsQuery,
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
@@ -50,8 +65,16 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       return null;
     });
 
+  const collections = context.storefront
+    .query(ALL_COLLECTIONS_QUERY)
+    .catch((error) => {
+      console.error(error);
+      return null;
+    });
+
   return {
     recommendedProducts,
+    collections,
   };
 }
 
@@ -60,7 +83,11 @@ export default function Homepage() {
   return (
     <div className="home">
       <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
+      <div className="relative z-10 bg-white">
+        <RecommendedProducts products={data.recommendedProducts} />
+        <AllCollections collections={data.collections} />
+      </div>
+      <div className="h-screen"></div>
     </div>
   );
 }
@@ -72,18 +99,44 @@ function FeaturedCollection({
 }) {
   if (!collection) return null;
   const image = collection?.image;
+
+  const {scrollY} = useScroll();
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    console.log('Page scroll: ', latest);
+  });
+
+  const headingOpacity = useTransform(scrollY, [0, 250], [1, 0]);
+
+  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+
+  const heroScale = useTransform(scrollY, [0, 1000], [1, 2]);
+
   return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
+    <div className="grid grid-cols-2 gap-2 h-[90vh] sticky top-20">
+      <div className="flex flex-col gap-12 justify-center">
+        <motion.h1
+          className="text-6xl font-bold text-balance tracking-tight"
+          style={{opacity: headingOpacity}}
+        >
+          Make a new friend today!
+        </motion.h1>
+        <Button className="w-fit">Shop ODUCKO</Button>
+      </div>
       {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw"/>
+        <div className="flex items-center">
+          <motion.div
+            style={{originX: 1.01, scale: heroScale, opacity: heroOpacity}}
+          >
+            <Image
+              data={image}
+              width="50vw"
+              sizes="(min-width: 45em) 50vw, 100vw"
+            />
+          </motion.div>
         </div>
       )}
-      <h1>{collection.title}</h1>
-    </Link>
+    </div>
   );
 }
 
@@ -93,36 +146,81 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery | null>;
 }) {
   return (
-    <div className="recommended-products">
-      <h2>Recommended Products</h2>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {(response) => (
-            <div className="grid grid-cols-1">
-              {response
-                ? response.products.nodes.map((product) => (
-                    <Link
-                      key={product.id}
-                      className="recommended-product"
-                      to={`/products/${product.handle}`}
-                    >
-                      <Image
-                        data={product.images.nodes[0]}
-                        aspectRatio="1/1"
-                        sizes="(min-width: 45em) 20vw, 50vw"
-                      />
-                      <h4>{product.title}</h4>
-                      <small>
-                        <Money data={product.priceRange.minVariantPrice} />
-                      </small>
-                    </Link>
-                  ))
-                : null}
-            </div>
-          )}
-        </Await>
-      </Suspense>
-      <br />
+    <div className="relative bg-background flex items-center z-10">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-4xl font-bold">Recommended Products</h2>
+        <div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={products}>
+              {(response) => (
+                <div className="flex">
+                  {response
+                    ? response.products.nodes.map((product, index) =>
+                        index % 2 === 0 ? (
+                          <ProductCard {...product} key={product.id}>
+                            <ProductCardLink className="relative group">
+                              <ProductCardImage className="group-hover:brightness-50 transition duration-300" />
+                              <div className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300">
+                                <div className="border border-white p-2 text-white">
+                                  View Details
+                                </div>
+                              </div>
+                            </ProductCardLink>
+
+                            <div className="bg-red-500 p-6">
+                              <ProductCardTitle className="text-3xl font-bold text-white" />
+                              <ProductCardPrice className="text-2xl font-normal text-white" />
+                            </div>
+                          </ProductCard>
+                        ) : (
+                          <ProductCard {...product} key={product.id}>
+                            <div className="bg-red-500 p-6">
+                              <ProductCardTitle className="text-3xl font-bold text-white" />
+                              <ProductCardPrice className="text-2xl font-normal text-white" />
+                            </div>
+                            <ProductCardLink className="relative group">
+                              <ProductCardImage className="group-hover:brightness-50 transition duration-300" />
+                              <div className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300">
+                                <div className="border border-white p-2 text-white">
+                                  View Details
+                                </div>
+                              </div>
+                            </ProductCardLink>
+                          </ProductCard>
+                        ),
+                      )
+                    : null}
+                </div>
+              )}
+            </Await>
+          </Suspense>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AllCollections({
+  collections,
+}: {
+  collections: Promise<AllCollectionsQuery | null>;
+}) {
+  return (
+    <div>
+      <h2 className="text-4xl font-bold">Collections</h2>
+      <div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Await resolve={collections}>
+            {(response) => (
+              <>
+                {response ? (
+                  <CollectionGrid collections={response['collections']} />
+                ) : null}
+              </>
+            )}
+          </Await>
+        </Suspense>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import type {IGraphQLConfig} from 'graphql-config';
 import {getSchema} from '@shopify/hydrogen-codegen';
+import type {IGraphQLConfig} from 'graphql-config';
 
 /**
  * GraphQL Config
@@ -13,7 +13,7 @@ export default {
       documents: [
         './*.{ts,tsx,js,jsx}',
         './app/**/*.{ts,tsx,js,jsx}',
-        '!./app/graphql/**/*.{ts,tsx,js,jsx}',
+        '!./app/graphql/customer-account/**/*.{ts,tsx,js,jsx}',
       ],
     },
 
