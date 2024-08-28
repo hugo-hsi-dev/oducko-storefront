@@ -1,4 +1,4 @@
-import {useProductCardContext} from '@/components/product-card/ProductCard';
+import {useProductCardContext} from '@/components/product-card/ProductCardRoot';
 import {ComponentProps} from 'react';
 
 type ProductCardPriceProps = ComponentProps<'div'>;

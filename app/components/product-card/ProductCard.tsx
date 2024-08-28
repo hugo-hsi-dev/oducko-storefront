@@ -1,39 +1,46 @@
-import {ComponentProps, useState} from 'react';
+import ProductCardImage from '@/components/product-card/ProductCardImage';
+import ProductCardLink from '@/components/product-card/ProductCardLink';
+import ProductCardPrice from '@/components/product-card/ProductCardPrice';
+import ProductCardRoot from '@/components/product-card/ProductCardRoot';
+import ProductCardTitle from '@/components/product-card/ProductCardTitle';
+import {useState} from 'react';
 
-type ProductCardProps = ProductData & ComponentProps<'div'>;
+import {motion} from 'framer-motion';
+import {ProductItemFragment} from 'storefrontapi.generated';
 
-import {createContext, useContext} from 'react';
-import {RecommendedProductsQuery} from 'storefrontapi.generated';
+type ProductCardProps = {
+  product: ProductItemFragment;
+};
 
-export type ProductData = RecommendedProductsQuery['products']['nodes'][0];
-
-const ProductCardContext = createContext<ProductData | null>(null);
-
-export function useProductCardContext() {
-  const context = useContext(ProductCardContext);
-  if (!context) {
-    throw new Error(
-      'ProductCard components must be used inside of ProductCard Root Component',
-    );
-  }
-  return context;
-}
-
-export default function ProductCard({
-  id,
-  handle,
-  images,
-  priceRange,
-  title,
-  ...props
-}: ProductCardProps) {
-  const [state, setState] = useState();
-
+export default function ProductCard({product}: ProductCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
   return (
-    <ProductCardContext.Provider
-      value={{id, handle, images, priceRange, title}}
+    <ProductCardRoot
+      {...product}
+      key={product.id}
+      className="rounded overflow-hidden border p-2"
     >
-      <div {...props} />
-    </ProductCardContext.Provider>
+      <ProductCardLink
+        onMouseOver={() => setIsHovered(true)}
+        onMouseOut={() => setIsHovered(false)}
+      >
+        {isHovered ? (
+          <div className="h-[100px] flex justify-center items-center text-3xl font-bold pb-2">
+            More Details
+          </div>
+        ) : null}
+
+        <motion.div layout>
+          <ProductCardImage />
+        </motion.div>
+
+        {!isHovered ? (
+          <div className="h-[100px] pt-2">
+            <ProductCardPrice className="text-2xl font-bold" />
+            <ProductCardTitle className="text-lg font-semibold" />
+          </div>
+        ) : null}
+      </ProductCardLink>
+    </ProductCardRoot>
   );
 }

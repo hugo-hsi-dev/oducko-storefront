@@ -24,13 +24,13 @@ export default function CollectionItem({
           className="absolute top-0 bottom-0 transition group-hover:scale-110 duration-300"
         />
       )}
-      <div className="group-hover:bg-primary group-hover:text-primary-foreground absolute top-5 right-5 transition duration-300">
+      <div className="group-hover:bg-red-500  absolute top-5 right-5 transition duration-300">
         <ArrowRight
           size={50}
-          className="group-hover:-rotate-45 transition duration-300"
+          className="group-hover:-rotate-45 group-hover:text-white transition duration-300"
         />
       </div>
-      <h5 className="absolute bottom-10 left-10 z-10 text-6xl font-bold">
+      <h5 className="absolute bottom-10 left-10 z-10 text-6xl font-bold group-hover:text-red-500 transition duration-300">
         {collection.title}
       </h5>
     </Link>

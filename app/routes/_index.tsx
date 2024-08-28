@@ -1,11 +1,8 @@
 import CollectionGrid from '@/components/collections/CollectionGrid';
 import ProductCard from '@/components/product-card/ProductCard';
-import ProductCardImage from '@/components/product-card/ProductCardImage';
-import ProductCardLink from '@/components/product-card/ProductCardLink';
-import ProductCardPrice from '@/components/product-card/ProductCardPrice';
-import ProductCardTitle from '@/components/product-card/ProductCardTitle';
 import {Button} from '@/components/ui/button';
 import {ALL_COLLECTIONS_QUERY} from '@/graphql/store/CollectionsQuery';
+import {PRODUCT_ITEM_FRAGMENT} from '@/graphql/store/ProductsQuery';
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {Image} from '@shopify/hydrogen';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
@@ -19,7 +16,7 @@ import {Suspense} from 'react';
 import type {
   AllCollectionsQuery,
   FeaturedCollectionFragment,
-  RecommendedProductsQuery,
+  RecommendedProductQuery,
 } from 'storefrontapi.generated';
 
 export const meta: MetaFunction = () => {
@@ -143,7 +140,7 @@ function FeaturedCollection({
 function RecommendedProducts({
   products,
 }: {
-  products: Promise<RecommendedProductsQuery | null>;
+  products: Promise<RecommendedProductQuery | null>;
 }) {
   return (
     <div className="relative bg-background flex items-center z-10">
@@ -153,42 +150,11 @@ function RecommendedProducts({
           <Suspense fallback={<div>Loading...</div>}>
             <Await resolve={products}>
               {(response) => (
-                <div className="flex">
+                <div className="flex gap-2">
                   {response
-                    ? response.products.nodes.map((product, index) =>
-                        index % 2 === 0 ? (
-                          <ProductCard {...product} key={product.id}>
-                            <ProductCardLink className="relative group">
-                              <ProductCardImage className="group-hover:brightness-50 transition duration-300" />
-                              <div className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                <div className="border border-white p-2 text-white">
-                                  View Details
-                                </div>
-                              </div>
-                            </ProductCardLink>
-
-                            <div className="bg-red-500 p-6">
-                              <ProductCardTitle className="text-3xl font-bold text-white" />
-                              <ProductCardPrice className="text-2xl font-normal text-white" />
-                            </div>
-                          </ProductCard>
-                        ) : (
-                          <ProductCard {...product} key={product.id}>
-                            <div className="bg-red-500 p-6">
-                              <ProductCardTitle className="text-3xl font-bold text-white" />
-                              <ProductCardPrice className="text-2xl font-normal text-white" />
-                            </div>
-                            <ProductCardLink className="relative group">
-                              <ProductCardImage className="group-hover:brightness-50 transition duration-300" />
-                              <div className="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition duration-300">
-                                <div className="border border-white p-2 text-white">
-                                  View Details
-                                </div>
-                              </div>
-                            </ProductCardLink>
-                          </ProductCard>
-                        ),
-                      )
+                    ? response.products.nodes.map((product, index) => (
+                        <ProductCard product={product} key={product.id} />
+                      ))
                     : null}
                 </div>
               )}
@@ -249,31 +215,12 @@ const FEATURED_COLLECTION_QUERY = `#graphql
 ` as const;
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    images(first: 1) {
-      nodes {
-        id
-        url
-        altText
-        width
-        height
-      }
-    }
-  }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
+${PRODUCT_ITEM_FRAGMENT}
+  query RecommendedProduct ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
     products(first: 4, sortKey: UPDATED_AT, reverse: true) {
       nodes {
-        ...RecommendedProduct
+        ...ProductItem
       }
     }
   }

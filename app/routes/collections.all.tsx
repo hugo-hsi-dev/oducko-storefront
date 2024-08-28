@@ -1,9 +1,9 @@
-import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
-import type {ProductItemFragment} from 'storefrontapi.generated';
-import {useVariantUrl} from '@/lib/variants';
 import {PaginatedResourceSection} from '@/components/PaginatedResourceSection';
+import {PRODUCT_ITEM_FRAGMENT} from '@/graphql/store/ProductsQuery';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import type {ProductItemFragment} from 'storefrontapi.generated';
 
 export const meta: MetaFunction<typeof loader> = () => {
   return [{title: `Hydrogen | Products`}];
@@ -76,14 +76,12 @@ function ProductItem({
   product: ProductItemFragment;
   loading?: 'eager' | 'lazy';
 }) {
-  const variant = product.variants.nodes[0];
-  const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
   return (
     <Link
       className="product-item"
       key={product.id}
       prefetch="intent"
-      to={variantUrl}
+      to={`/products/${product.handle}`}
     >
       {product.featuredImage && (
         <Image
@@ -101,41 +99,6 @@ function ProductItem({
     </Link>
   );
 }
-
-const PRODUCT_ITEM_FRAGMENT = `#graphql
-  fragment MoneyProductItem on MoneyV2 {
-    amount
-    currencyCode
-  }
-  fragment ProductItem on Product {
-    id
-    handle
-    title
-    featuredImage {
-      id
-      altText
-      url
-      width
-      height
-    }
-    priceRange {
-      minVariantPrice {
-        ...MoneyProductItem
-      }
-      maxVariantPrice {
-        ...MoneyProductItem
-      }
-    }
-    variants(first: 1) {
-      nodes {
-        selectedOptions {
-          name
-          value
-        }
-      }
-    }
-  }
-` as const;
 
 // NOTE: https://shopify.dev/docs/api/storefront/2024-01/objects/product
 const CATALOG_QUERY = `#graphql

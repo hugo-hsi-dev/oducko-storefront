@@ -1,11 +1,12 @@
-import {useProductCardContext} from '@/components/product-card/ProductCard';
+import {useProductCardContext} from '@/components/product-card/ProductCardRoot';
 import {Image} from '@shopify/hydrogen';
 import {ComponentProps} from 'react';
 
 type ProductCardImageProps = ComponentProps<typeof Image>;
 
 export default function ProductCardImage({...props}: ProductCardImageProps) {
-  const {images} = useProductCardContext();
-  const data = images.nodes[0];
-  return <Image data={data} {...props} />;
+  const {featuredImage} = useProductCardContext();
+  return featuredImage ? (
+    <Image sizes="50vw" data={featuredImage} {...props} />
+  ) : null;
 }
